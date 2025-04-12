@@ -1,0 +1,5 @@
+id,question_text,related_content_id,expected_keywords
+1,Was this content helpful?,1,"yes,no,maybe"
+2,Would you like more detail or summary next time?,NULL,"detail,summary"
+3,Was the length of this content appropriate?,NULL,"too short,just right,too long"
+4,Did you find the examples relevant?,NULL,"yes,no,maybe"

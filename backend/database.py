@@ -25,17 +25,37 @@ def init_db():
             )
         ''')
 
-        # Create question table
+        # Create onboarding_questions table
         cursor.execute('''
-            CREATE TABLE IF NOT EXISTS question_table (
+            CREATE TABLE IF NOT EXISTS onboarding_questions (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 question_text TEXT NOT NULL,
-                expected_answer_keywords TEXT,
-                content_id INTEGER,
-                FOREIGN KEY(content_id) REFERENCES content_table(id)
+                expected_keywords TEXT,
+                weight_to_theme INTEGER
             )
         ''')
 
+        # Create feedback_questions table
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS feedback_questions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                question_text TEXT NOT NULL,
+                related_content_id INTEGER,
+                expected_keywords TEXT,
+                FOREIGN KEY(related_content_id) REFERENCES content_table(id)
+            )
+        ''')
+        # Create user_progress table
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS user_progress (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id TEXT NOT NULL,
+                completed_content_ids TEXT, -- comma-separated list of content IDs
+                onboarding_answers TEXT,    -- JSON string of question_id:answer
+                feedback_answers TEXT       -- JSON string of content_id: {question_id: answer}
+            )
+        ''')
+        
         conn.commit()
 
 
@@ -62,3 +82,60 @@ def populate_content_table_from_csv(csv_file):
 
         conn.commit()
         print("✅ Data successfully inserted into content_table.")
+
+def populate_onboarding_questions_from_csv(csv_file):
+    with get_connection() as conn:
+        cursor = conn.cursor()
+
+        with open(csv_file, newline='', encoding='utf-8') as file:
+            reader = csv.DictReader(file)
+
+            count = 0
+
+            for row in reader:
+                row = {k.strip(): v for k, v in row.items()}  # Clean keys
+
+                question_text = row.get('question_text')
+                expected_keywords = row.get('expected_keywords')
+                weight_to_theme = row.get('weight_to_theme')
+
+                if question_text and expected_keywords and weight_to_theme:
+                    cursor.execute('''
+                        INSERT INTO onboarding_questions (question_text, expected_keywords, weight_to_theme)
+                        VALUES (?, ?, ?)
+                    ''', (question_text.strip(), expected_keywords.strip(), weight_to_theme.strip()))
+                    count += 1
+
+        conn.commit()
+        print(f"✅ Data successfully inserted into onboarding_questions. Rows inserted: {count}")
+
+def populate_feedback_questions_from_csv(csv_file):
+    with get_connection() as conn:
+        cursor = conn.cursor()
+
+        with open(csv_file, newline='', encoding='utf-8') as file:
+            reader = csv.DictReader(file)
+
+            count = 0
+
+            for row in reader:
+                row = {k.strip(): v for k, v in row.items()}  # Clean keys
+
+                question_text = row.get('question_text')
+                related_content_id = row.get('related_content_id')
+                expected_keywords = row.get('expected_keywords')
+
+                if question_text and expected_keywords:
+                    cursor.execute('''
+                        INSERT INTO feedback_questions (question_text, related_content_id, expected_keywords)
+                        VALUES (?, ?, ?)
+                    ''', (
+                        question_text.strip(),
+                        related_content_id.strip() if related_content_id else None,
+                        expected_keywords.strip()
+                    ))
+                    count += 1
+
+        conn.commit()
+        print(f"✅ Data successfully inserted into feedback_questions. Rows inserted: {count}")
+

@@ -1,0 +1,8 @@
+id,question_text,expected_keywords,weight_to_theme
+1,What interests you most about Bitcoin?,"investing, technology, future",1
+2,What is your experience level with cryptocurrencies?,"beginner, intermediate, advanced",2
+3,Are you curious about Bitcoin's technical side?,"yes, no",3
+4,What type of learner are you?,"visual, reading, listening",4
+5,What is your 16 personality type (also called Meyers Briggs)?,"Commander, Architect, Teacher",5
+6,What is your primary goal with Bitcoin?,"investing, learning, community",6
+7,How do you prefer to consume content?,"videos, articles, podcasts",7
