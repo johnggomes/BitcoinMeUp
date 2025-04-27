@@ -1,0 +1,65 @@
+@keyframes popIn {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.progress-tree-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 20px;
+  justify-content: center;
+}
+
+.progress-bubble {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 10px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: default;
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.1);
+  animation: popIn 0.5s ease;
+}
+
+.progress-bubble:hover {
+  transform: scale(1.1);
+  transition: transform 0.2s ease;
+}
+
+.completed {
+  background-color: #4caf50; /* Green for completed */
+  color: white;
+}
+
+.pending {
+  background-color: #ffd966; /* Soft yellow by default */
+  color: #555;
+}
+
+.pending:nth-child(1n) {
+  background-color: #ffd966;
+} /* Yellow */
+.pending:nth-child(2n) {
+  background-color: #8fd3f4;
+} /* Light blue */
+.pending:nth-child(3n) {
+  background-color: #f4b6c2;
+} /* Light pink */
+.pending:nth-child(4n) {
+  background-color: #d2f8d2;
+} /* Light green */
+.pending:nth-child(5n) {
+  background-color: #e6d0f7;
+} /* Light purple */
