@@ -9,7 +9,17 @@ from database import (
     populate_onboarding_questions_from_csv,
     populate_feedback_questions_from_csv
 )
+from fastapi.middleware.cors import CORSMiddleware
+
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # allow all origins (good for local testing)
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Initialize DB on start
 init_db()
@@ -45,11 +55,17 @@ def read_root():
 def get_onboarding_questions():
     with get_connection() as conn:
         cursor = conn.cursor()
-        cursor.execute('SELECT id, question_text FROM onboarding_questions')
+        cursor.execute('SELECT id, question_text, expected_keywords FROM onboarding_questions')
         questions = cursor.fetchall()
 
-        # Convert Row objects to dict
-        result = [{"id": row["id"], "question_text": row["question_text"]} for row in questions]
+        result = [
+            {
+                "id": row["id"],
+                "question_text": row["question_text"],
+                "expected_keywords": row["expected_keywords"]
+            }
+            for row in questions
+        ]
 
     return JSONResponse(content=result)
 
